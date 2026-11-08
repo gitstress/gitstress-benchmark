@@ -1,0 +1,28 @@
+{
+  "name": "gitstress-benchmark",
+  "version": "0.12.0",
+  "description": "Hardware-verified concurrency saturation & headroom benchmark harness for GitStress stacks",
+  "main": "scripts/run_matrix.js",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/run_matrix.js",
+    "bench:proxy": "bash archetypes/01-go-reverse-proxy-pool/verify.sh",
+    "bench:db": "bash archetypes/02-node-prisma-unindexed-pool/verify.sh",
+    "bench:swarm": "bash archetypes/03-go-swarm-socket-fanout/verify.sh",
+    "bench:engine": "bash archetypes/04-gitstress-engine-outbound-pool/verify.sh"
+  },
+  "keywords": [
+    "gitstress",
+    "benchmark",
+    "concurrency",
+    "littles-law",
+    "mva",
+    "load-testing",
+    "autocannon"
+  ],
+  "author": "GitStress Inc.",
+  "license": "MIT",
+  "dependencies": {
+    "autocannon": "^7.15.0"
+  }
+}
