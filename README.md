@@ -1,6 +1,6 @@
 # GitStress Empirical Benchmark Suite
 
-[![Hardware Concurrency Verification Matrix](https://github.com/kilopal/gitstress-benchmark/actions/workflows/verify-matrix.yml/badge.svg)](https://github.com/kilopal/gitstress-benchmark/actions/workflows/verify-matrix.yml)
+[![Hardware Concurrency Verification Matrix](https://github.com/gitstress/gitstress-benchmark/actions/workflows/verify-matrix.yml/badge.svg)](https://github.com/gitstress/gitstress-benchmark/actions/workflows/verify-matrix.yml)
 [![GitStress Engine](https://img.shields.io/badge/gitstress-v0.12.0-ea580c)](https://gitstress.com)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -39,7 +39,7 @@ This repository exists to make every GitStress prediction 100% falsifiable and e
 
 ### Run All Benchmarks
 ```bash
-git clone https://github.com/kilopal/gitstress-benchmark.git
+git clone https://github.com/gitstress/gitstress-benchmark.git
 cd gitstress-benchmark
 npm install
 node scripts/run_matrix.js
@@ -110,4 +110,4 @@ gitstress-benchmark/
 - **GitStress Platform**: [https://gitstress.com](https://gitstress.com)
 - **GitStress Core Engine**: [https://github.com/gitstress/gitstress](https://github.com/gitstress/gitstress)
 - **Production Concurrency Matrix**: [https://gitstress.com/stacks](https://gitstress.com/stacks)
-- **Report an Issue**: [https://github.com/kilopal/gitstress-benchmark/issues](https://github.com/kilopal/gitstress-benchmark/issues)
+- **Report an Issue**: [https://github.com/gitstress/gitstress-benchmark/issues](https://github.com/gitstress/gitstress-benchmark/issues)

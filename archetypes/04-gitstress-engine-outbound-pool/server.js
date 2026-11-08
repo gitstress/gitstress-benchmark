@@ -72,3 +72,4 @@ server.listen(port, () => {
   console.log(`[GitStress Benchmark] Archetype 04 listening on :${port}`);
   console.log(`[GitStress Benchmark] Mode: ${isTuned ? 'TUNED (Undici Pool + LRU Cache: 125k c/s)' : 'BASELINE (Outbound Socket Exhaustion: 12.5k c/s)'}`);
 });
+

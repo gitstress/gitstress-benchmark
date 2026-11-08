@@ -42,3 +42,4 @@ echo "Archetype 02 Verification Complete."
 echo "Baseline Results: $DIR/baseline_results.txt"
 echo "Tuned Results:    $DIR/tuned_results.txt"
 echo "================================================================="
+

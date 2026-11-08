@@ -92,3 +92,4 @@ server.listen(port, () => {
   console.log(`[GitStress Benchmark] Archetype 02 listening on :${port}`);
   console.log(`[GitStress Benchmark] Mode: ${isTuned ? 'TUNED (+17.8x Index Headroom)' : 'BASELINE (Prisma Pool-10 + Table Scan)'}`);
 });
+
