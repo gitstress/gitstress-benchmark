@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitStress Empirical Benchmark Suite -- Hardware Dynamometer</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <a href="https://gitstress.com" target="_blank" class="brand-link">
+          <span class="brand-glyph">§</span>
+          <span class="brand-name">GitStress</span>
+        </a>
+        <span class="nav-sep">/</span>
+        <span class="brand-sub">benchmark-suite</span>
+        <span class="badge-version">v0.12.0</span>
+      </div>
+
+      <div class="nav-center">
+        <div class="telemetry-pill" id="hostTelemetry">
+          <span class="pulse-dot"></span>
+          <span class="telemetry-text" id="hostTelemetryText">Scanning host environment...</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <a href="https://github.com/gitstress/gitstress-benchmark" target="_blank" class="nav-btn nav-btn-ghost">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+        <a href="https://gitstress.com/stacks" target="_blank" class="nav-btn nav-btn-ghost">
+          101 Stacks
+        </a>
+        <button id="themeToggle" class="nav-btn nav-btn-icon" title="Toggle theme">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero / Control Header -->
+    <main class="main-content">
+      <section class="benchmark-hero">
+        <div class="hero-header-line">
+          <div>
+            <h1 class="hero-title">Empirical Concurrency Verification Matrix</h1>
+            <p class="hero-subtitle">
+              Hardware-proven load testing harness executing Little's Law ($L = \lambda W$) saturation boundaries and +10x headroom remedies on physical hardware.
+            </p>
+          </div>
+
+          <div class="run-control-box">
+            <div class="control-row">
+              <label class="control-label">Target Mode:</label>
+              <div class="toggle-group" id="modeToggle">
+                <button class="toggle-btn active" data-mode="portable">Portable Archetypes</button>
+                <button class="toggle-btn" data-mode="real">Host Production Software</button>
+              </div>
+            </div>
+
+            <div class="control-actions">
+              <button id="runMatrixBtn" class="btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                Run Hardware Verification Matrix
+              </button>
+              <button id="toggleConsoleBtn" class="btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="4 17 10 11 4 5"></polyline>
+                  <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+                Console Log
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry Spec Bar -->
+        <div class="telemetry-spec-bar" id="hardwareBar">
+          <div class="spec-item">
+            <span class="spec-label">PLATFORM</span>
+            <span class="spec-val" id="specPlatform">Loading...</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">CPU CORE TOPOLOGY</span>
+            <span class="spec-val" id="specCpu">Loading...</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">RUNTIMES</span>
+            <span class="spec-val" id="specRuntimes">Loading...</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">TEST ENGINE</span>
+            <span class="spec-val">autocannon (HTTP/1.1 Pipelined)</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">LAST RUN</span>
+            <span class="spec-val" id="specLastRun">--</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Running Banner -->
+      <div class="running-banner hidden" id="runningBanner">
+        <div class="spinner"></div>
+        <div class="running-text">
+          <strong id="runningHeadline">Physical Benchmark In Progress...</strong>
+          <span id="runningDetails">Running high-concurrency client saturation sweep across stations.</span>
+        </div>
+      </div>
+
+      <!-- Comparison Cards Grid -->
+      <section class="cards-section">
+        <div class="section-title-row">
+          <h2 class="section-title">Verified Production Stacks</h2>
+          <div class="section-meta" id="verdictSummary">4 / 4 Empirically Verified</div>
+        </div>
+
+        <div class="cards-grid" id="cardsGrid">
+          <!-- Dynamically populated via app.js -->
+        </div>
+      </section>
+
+      <!-- Console Drawer -->
+      <section class="console-drawer hidden" id="consoleDrawer">
+        <div class="console-header">
+          <div class="console-title">
+            <span class="terminal-dot"></span>
+            Hardware Verification Execution Stream (SSE)
+          </div>
+          <div class="console-actions">
+            <button id="clearConsoleBtn" class="btn-sm">Clear</button>
+            <button id="closeConsoleBtn" class="btn-sm">Close</button>
+          </div>
+        </div>
+        <pre class="console-body" id="consoleBody"></pre>
+      </section>
+
+      <!-- Methodology Breakdown Section -->
+      <section class="methodology-section">
+        <h3 class="methodology-title">Operational Queuing Network Model (MVA)</h3>
+        <p class="methodology-text">
+          GitStress maps each software stack to a 4-station operational queuing network. When client concurrency crosses the physical knee, Little's Law dictates exponential queue accumulation, producing socket descriptor starvation, connection pool exhaustion, or event loop blocking:
+        </p>
+        <div class="station-diagram">
+          <div class="station-box">
+            <div class="station-num">STATION 1</div>
+            <div class="station-name">Edge Ingress / TLS</div>
+            <div class="station-desc">Epoll listener & reverse proxy transport pool</div>
+          </div>
+          <div class="station-arrow">-></div>
+          <div class="station-box">
+            <div class="station-num">STATION 2</div>
+            <div class="station-name">Worker Runtime</div>
+            <div class="station-desc">Single-threaded event loop or goroutine scheduler</div>
+          </div>
+          <div class="station-arrow">-></div>
+          <div class="station-box">
+            <div class="station-num">STATION 3</div>
+            <div class="station-name">Connection Pool</div>
+            <div class="station-desc">Database or outbound HTTP socket manager</div>
+          </div>
+          <div class="station-arrow">-></div>
+          <div class="station-box">
+            <div class="station-num">STATION 4</div>
+            <div class="station-name">Storage / Upstream</div>
+            <div class="station-desc">B-Tree indexed lookup vs sequential table scan</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div>GitStress Inc. -- Hardware-Verified Concurrency Saturation & Headroom Matrix</div>
+        <div class="footer-links">
+          <a href="https://gitstress.com" target="_blank">GitStress Platform</a>
+          <span class="dot-sep">&middot;</span>
+          <a href="https://gitstress.com/stacks" target="_blank">Archival Stacks Matrix</a>
+          <span class="dot-sep">&middot;</span>
+          <a href="https://github.com/gitstress/gitstress-benchmark" target="_blank">Benchmark Repository</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -63,19 +63,36 @@ Measured on physical hardware under sustained concurrent load using `autocannon`
 
 ---
 
-## Quickstart: Verify Locally in 30 Seconds
+## Quickstart: Both Interactive Web Application & Headless CLI
+
+`gitstress-benchmark` provides two operational modes out-of-the-box:
+1. **Interactive Web Application & Visual Dashboard**: Full graphical dynamometer interface with real-time SSE execution streaming.
+2. **Headless CLI Matrix**: Fast, automated runner for local terminal profiling and GitHub Actions CI pipelines.
 
 ### Prerequisites
 - Node.js 18+
 - Go 1.21+
 - `npm`
 
-### Run All Benchmarks
+### 1. Launch the Interactive Web Application
 ```bash
 git clone https://github.com/gitstress/gitstress-benchmark.git
 cd gitstress-benchmark
 npm install
-node scripts/run_matrix.js
+npm start
+```
+Open **`http://127.0.0.1:4200`** in your browser to explore the visual hardware dynamometer, toggle between Portable Archetypes and Live Production Software, and trigger real-time benchmark sweeps with live console streaming.
+
+### 2. Run the Headless CLI Matrix
+```bash
+# Run all verified stacks in terminal
+npm test
+
+# Run with real host production software targets
+npm run test:real
+
+# Run a single target (e.g. msh, gitstress, tkngate)
+node scripts/run_matrix.js --target=msh
 ```
 
 The runner automatically compiles the native Go binaries, spawns the baseline and tuned processes across collision-free ports, runs sustained `autocannon` load sweeps, and generates fresh telemetry in `results/benchmark_results.json`.

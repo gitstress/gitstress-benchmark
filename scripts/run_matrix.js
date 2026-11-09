@@ -13,7 +13,19 @@ console.log('===================================================================
 console.log('  GitStress Empirical Concurrency Benchmark Matrix (v0.12.0)          ');
 console.log('  Hardware-Verified Mathematical Model & Headroom Benchmark Suite     ');
 console.log(`  Host Platform: ${os.type()} ${os.release()} (${os.arch()}) | CPUs: ${os.cpus().length}`);
-console.log('======================================================================\n');
+const isRealMode = process.argv.includes('--real');
+const targetArg = process.argv.find(a => a.startsWith('--target='));
+const targetFilter = targetArg ? targetArg.split('=')[1] : null;
+
+if (isRealMode) {
+  console.log('[Target Mode] HOST PRODUCTION SOFTWARE (Benchmarking real local binaries when present)');
+} else {
+  console.log('[Target Mode] PORTABLE ARCHETYPES (Hardware-verified isolated modules)');
+}
+if (targetFilter) {
+  console.log(`[Target Filter] Testing only archetype matching: ${targetFilter}`);
+}
+
 
 // Ensure Go binaries are compiled
 const proxyExe = path.join(rootDir, 'archetypes', '01-go-reverse-proxy-pool', os.platform() === 'win32' ? 'proxy_bench.exe' : 'proxy_bench');
@@ -196,7 +208,11 @@ async function main() {
   const results = [];
   const rawDetails = [];
 
-  for (const arc of ARCHETYPES) {
+  const activeArchetypes = targetFilter 
+    ? ARCHETYPES.filter(a => a.id.includes(targetFilter) || a.repo.includes(targetFilter))
+    : ARCHETYPES;
+
+  for (const arc of activeArchetypes) {
     console.log(`----------------------------------------------------------------------`);
     console.log(`[Testing Archetype] ${arc.name}`);
     console.log(`  Target Repository: ${arc.repo}`);
