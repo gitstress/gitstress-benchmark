@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-11-09T01:36:41.761Z",
+  "timestamp": "2026-11-09T05:47:15.144Z",
   "harness": "GitStress Software Verification Engine (MVA & AST Static Analyzer)",
   "version": "0.12.0",
   "totalScanned": 4,
-  "passedCount": 4,
+  "passedCount": 0,
   "accuracy": "100%",
   "details": [
     {
@@ -17,7 +17,7 @@
       "predictedHeadroom": "+10.0x",
       "remedy": "Non-blocking channel ring buffer with select evictions",
       "astPassed": true,
-      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+      "verdict": "Pattern matched in AST"
     },
     {
       "id": "02-gitstress",
@@ -30,7 +30,7 @@
       "predictedHeadroom": "+10.0x",
       "remedy": "Undici Agent connection pool + Multi-tier LRU cache",
       "astPassed": true,
-      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+      "verdict": "Pattern matched in AST"
     },
     {
       "id": "03-tkngate",
@@ -43,7 +43,7 @@
       "predictedHeadroom": "+10.0x",
       "remedy": "High-capacity pooled http.Transport (MaxIdleConnsPerHost: 2000)",
       "astPassed": true,
-      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+      "verdict": "Pattern matched in AST"
     },
     {
       "id": "04-calcom",
@@ -56,7 +56,7 @@
       "predictedHeadroom": "+17.8x",
       "remedy": "CREATE INDEX CONCURRENTLY + B-Tree index lookup (2.4ms)",
       "astPassed": true,
-      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+      "verdict": "Pattern matched in AST"
     }
   ]
 }

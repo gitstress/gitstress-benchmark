@@ -178,13 +178,13 @@ function renderDualView() {
               <td><strong>Culprit Symbol</strong></td>
               <td>${escapeHtml(soft.detectedSymbol)}</td>
               <td>${escapeHtml(hard.symbol || soft.detectedSymbol)}</td>
-              <td><strong style="color: var(--status-green);">100% MATCH</strong></td>
+              <td><strong style="color: var(--status-green);">MATCHED IN AST</strong></td>
             </tr>
             <tr>
               <td><strong>Saturation Knee</strong></td>
               <td>${escapeHtml(soft.predictedCeiling)}</td>
               <td>${hard.concurrency ? `${hard.concurrency} concurrent` : 'Measured knee'}</td>
-              <td><strong style="color: var(--status-green);">CONFIRMED</strong></td>
+              <td><strong style="color: var(--status-green);">OBSERVED IN HARNESS</strong></td>
             </tr>
             <tr>
               <td><strong>Throughput (Req/s)</strong></td>
@@ -196,7 +196,7 @@ function renderDualView() {
               <td><strong>Latency P99</strong></td>
               <td>MVA Queue Residence Time</td>
               <td>${hard.baseP99 ? `${hard.baseP99} -> ${hard.tunedP99} (${hard.latencyImprovement})` : 'Sub-millisecond'}</td>
-              <td><strong style="color: var(--status-green);">PROVEN</strong></td>
+              <td><strong style="color: var(--status-green);">MEASURED IN HARNESS</strong></td>
             </tr>
           </tbody>
         </table>
@@ -204,7 +204,7 @@ function renderDualView() {
         <div class="card-footer-meta">
           <div>FATAL STATION: <span class="concurrency-badge">${escapeHtml(soft.fatalStation)}</span></div>
           <div>REMEDY: <strong>${escapeHtml(soft.remedy)}</strong></div>
-          <div>STATUS: <strong style="color: var(--status-green);">DUAL HARNESS VERIFIED</strong></div>
+          <div>STATUS: <strong style="color: var(--status-green);">OBSERVED IN HARNESS</strong></div>
         </div>
       </div>
     `;
@@ -279,8 +279,8 @@ function renderSoftwareView() {
 
       <div class="card-footer-meta">
         <div>LITTLE'S LAW SATURATION: <span class="concurrency-badge">${escapeHtml(item.predictedCeiling)}</span></div>
-        <div>AST PARSER: <strong style="color: var(--status-green);">100% DETERMINISTIC</strong></div>
-        <div>VERDICT: <strong style="color: var(--status-green);">SOFTWARE VERIFIED</strong></div>
+        <div>AST PARSER: <strong style="color: var(--status-green);">PATTERN DETECTED</strong></div>
+        <div>VERDICT: <strong style="color: var(--status-green);">OBSERVED IN HARNESS</strong></div>
       </div>
     </div>
   `).join('');
@@ -363,7 +363,7 @@ function renderHardwareView() {
         <div class="card-footer-meta">
           <div>CONCURRENCY: <span class="concurrency-badge">${item.concurrency} concurrent</span></div>
           <div>LATENCY: <strong>${escapeHtml(item.latencyImprovement || 'Faster')}</strong></div>
-          <div>STATUS: <strong style="color: var(--status-green);">HARDWARE VERIFIED</strong></div>
+          <div>STATUS: <strong style="color: var(--status-green);">OBSERVED IN HARNESS</strong></div>
         </div>
       </div>
     `;

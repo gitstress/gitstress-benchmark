@@ -235,7 +235,7 @@ export async function runSoftwareVerification() {
       predictedHeadroom: target.expectedHeadroom,
       remedy: target.fixType,
       astPassed,
-      verdict: verified ? 'SOFTWARE VERIFIED (100% Deterministic AST)' : 'FAILED'
+      verdict: verified ? 'Pattern matched in AST' : 'FAILED'
     });
   }
 

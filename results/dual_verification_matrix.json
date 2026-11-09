@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-09T01:35:18.101Z",
+  "timestamp": "2026-11-09T05:48:23.635Z",
   "harnesses": {
     "software": "GitStress Static AST & 4-Station MVA Model Validator",
     "hardware": "GitStress Physical Hardware Load Testing Harness (autocannon)"
@@ -16,7 +16,7 @@
       "predictedHeadroom": "+10.0x",
       "remedy": "Non-blocking channel ring buffer with select evictions",
       "astPassed": true,
-      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+      "verdict": "Pattern matched in AST"
     },
     {
       "id": "02-gitstress",
@@ -29,7 +29,7 @@
       "predictedHeadroom": "+10.0x",
       "remedy": "Undici Agent connection pool + Multi-tier LRU cache",
       "astPassed": true,
-      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+      "verdict": "Pattern matched in AST"
     },
     {
       "id": "03-tkngate",
@@ -42,7 +42,7 @@
       "predictedHeadroom": "+10.0x",
       "remedy": "High-capacity pooled http.Transport (MaxIdleConnsPerHost: 2000)",
       "astPassed": true,
-      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+      "verdict": "Pattern matched in AST"
     },
     {
       "id": "04-calcom",
@@ -55,7 +55,7 @@
       "predictedHeadroom": "+17.8x",
       "remedy": "CREATE INDEX CONCURRENTLY + B-Tree index lookup (2.4ms)",
       "astPassed": true,
-      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+      "verdict": "Pattern matched in AST"
     }
   ],
   "hardwareResults": [
@@ -64,111 +64,111 @@
       "repo": "msh-protocol/msh",
       "symbol": "fleet.Server.handleRegister",
       "concurrency": 120,
-      "baseSuccessReqSec": 622,
-      "baseP50": "187ms",
-      "baseP99": "237ms",
+      "baseSuccessReqSec": 400,
+      "baseP50": "224ms",
+      "baseP99": "697ms",
       "baseErrors": 0,
-      "tunedSuccessReqSec": 6706,
-      "tunedP50": "15ms",
-      "tunedP99": "66ms",
+      "tunedSuccessReqSec": 2394,
+      "tunedP50": "33ms",
+      "tunedP99": "304ms",
       "tunedErrors": 0,
-      "gain": "+11.1x",
-      "latencyImprovement": "3.6x faster",
-      "verdict": "HARDWARE EMPIRICALLY VERIFIED"
+      "gain": "+6.0x",
+      "latencyImprovement": "2.3x faster",
+      "verdict": "Observed in harness"
     },
     {
       "name": "Analytical Engine Ingestion Pool",
       "repo": "gitstress/gitstress",
       "symbol": "fetcher.fetchLiveGitHubRepo",
       "concurrency": 120,
-      "baseSuccessReqSec": 2619,
-      "baseP50": "2ms",
-      "baseP99": "47ms",
-      "baseErrors": 37579,
-      "tunedSuccessReqSec": 10359,
-      "tunedP50": "9ms",
-      "tunedP99": "20ms",
+      "baseSuccessReqSec": 1111,
+      "baseP50": "55ms",
+      "baseP99": "508ms",
+      "baseErrors": 2434,
+      "tunedSuccessReqSec": 1625,
+      "tunedP50": "50ms",
+      "tunedP99": "343ms",
       "tunedErrors": 0,
-      "gain": "+4.0x",
-      "latencyImprovement": "2.4x faster",
-      "verdict": "HARDWARE EMPIRICALLY VERIFIED"
+      "gain": "+1.5x",
+      "latencyImprovement": "1.5x faster",
+      "verdict": "Observed in harness"
     },
     {
       "name": "Go Reverse Proxy Socket Churn",
       "repo": "tkngate/tkngate",
       "symbol": "http.DefaultTransport",
       "concurrency": 85,
-      "baseSuccessReqSec": 2020,
-      "baseP50": "30ms",
-      "baseP99": "174ms",
+      "baseSuccessReqSec": 462,
+      "baseP50": "61ms",
+      "baseP99": "466ms",
       "baseErrors": 0,
-      "tunedSuccessReqSec": 3038,
-      "tunedP50": "25ms",
-      "tunedP99": "46ms",
+      "tunedSuccessReqSec": 908,
+      "tunedP50": "50ms",
+      "tunedP99": "434ms",
       "tunedErrors": 0,
-      "gain": "+1.5x",
-      "latencyImprovement": "3.8x faster",
-      "verdict": "HARDWARE EMPIRICALLY VERIFIED"
+      "gain": "+1.3x",
+      "latencyImprovement": "1.1x faster",
+      "verdict": "Observed in harness"
     },
     {
       "name": "Node.js Prisma Pool Starvation",
       "repo": "calcom/cal.com",
       "symbol": "bookings.syncUpcoming",
       "concurrency": 65,
-      "baseSuccessReqSec": 91,
-      "baseP50": "661ms",
-      "baseP99": "799ms",
+      "baseSuccessReqSec": 85,
+      "baseP50": "728ms",
+      "baseP99": "947ms",
       "baseErrors": 0,
-      "tunedSuccessReqSec": 785,
-      "tunedP50": "91ms",
+      "tunedSuccessReqSec": 1951,
+      "tunedP50": "24ms",
       "tunedP99": "110ms",
       "tunedErrors": 0,
-      "gain": "+8.6x",
-      "latencyImprovement": "7.3x faster",
-      "verdict": "HARDWARE EMPIRICALLY VERIFIED"
+      "gain": "+22.8x",
+      "latencyImprovement": "8.6x faster",
+      "verdict": "Observed in harness"
     }
   ],
   "correlationMatrix": [
     {
       "Repository": "msh-protocol/msh",
       "Predicted Culprit": "fleet.Server.handleRegister",
-      "Measured Culprit": "fleet.Server.handleRegister",
-      "Predicted Saturation": "2,500 c/s",
-      "Measured Concurrency": "120 users",
+      "Tested Symbol": "fleet.Server.handleRegister",
+      "Theoretical MVA Ceiling": "2,500 c/s",
+      "Applied Client Concurrency": "120 concurrent",
       "Predicted Headroom": "+10.0x",
-      "Empirical Gain": "+11.1x",
-      "Model Accuracy": "100% PROVEN"
+      "Measured Throughput Gain": "+6.0x",
+      "Harness Verdict": "Observed in harness"
     },
     {
       "Repository": "gitstress/gitstress",
       "Predicted Culprit": "fetcher.fetchLiveGitHubRepo",
-      "Measured Culprit": "fetcher.fetchLiveGitHubRepo",
-      "Predicted Saturation": "12,500 c/s",
-      "Measured Concurrency": "120 users",
+      "Tested Symbol": "fetcher.fetchLiveGitHubRepo",
+      "Theoretical MVA Ceiling": "12,500 c/s",
+      "Applied Client Concurrency": "120 concurrent",
       "Predicted Headroom": "+10.0x",
-      "Empirical Gain": "+4.0x",
-      "Model Accuracy": "100% PROVEN"
+      "Measured Throughput Gain": "+1.5x",
+      "Harness Verdict": "Observed in harness"
     },
     {
       "Repository": "tkngate/tkngate",
       "Predicted Culprit": "http.DefaultTransport",
-      "Measured Culprit": "http.DefaultTransport",
-      "Predicted Saturation": "85 c/s",
-      "Measured Concurrency": "85 users",
+      "Tested Symbol": "http.DefaultTransport",
+      "Theoretical MVA Ceiling": "85 c/s",
+      "Applied Client Concurrency": "85 concurrent",
       "Predicted Headroom": "+10.0x",
-      "Empirical Gain": "+1.5x",
-      "Model Accuracy": "100% PROVEN"
+      "Measured Throughput Gain": "+1.3x",
+      "Harness Verdict": "Observed in harness"
     },
     {
       "Repository": "calcom/cal.com",
       "Predicted Culprit": "bookings.syncUpcoming",
-      "Measured Culprit": "bookings.syncUpcoming",
-      "Predicted Saturation": "62 c/s",
-      "Measured Concurrency": "65 users",
+      "Tested Symbol": "bookings.syncUpcoming",
+      "Theoretical MVA Ceiling": "62 c/s",
+      "Applied Client Concurrency": "65 concurrent",
       "Predicted Headroom": "+17.8x",
-      "Empirical Gain": "+8.6x",
-      "Model Accuracy": "100% PROVEN"
+      "Measured Throughput Gain": "+22.8x",
+      "Harness Verdict": "Observed in harness"
     }
   ],
-  "verdict": "BOTH HARNESSES VERIFIED -- ZERO HALLUCINATIONS"
+  "verdict": "EMPIRICAL PATTERN OBSERVED IN HARNESS"
 }

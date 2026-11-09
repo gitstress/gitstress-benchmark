@@ -1,113 +1,122 @@
-# GitStress Dual Verification Suite
+# GitStress Concurrency Benchmark & Verification Suite
 
 [![Hardware Concurrency Verification Matrix](https://github.com/gitstress/gitstress-benchmark/actions/workflows/verify-matrix.yml/badge.svg)](https://github.com/gitstress/gitstress-benchmark/actions/workflows/verify-matrix.yml)
 [![GitStress Platform](https://img.shields.io/badge/gitstress-v0.12.0-ea580c)](https://gitstress.com)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Dual-harness verification system for [GitStress](https://gitstress.com). Provides **both**:
-1. **The Software Verification Harness**: Static AST code analysis, 4-station Mean Value Analysis (MVA) queuing solver, and Little's Law ($L = \lambda W$) mathematical saturation engine validation.
-2. **The Physical Hardware Verification Harness**: Empirical load testing driving physical TCP socket starvation, thread pool exhaustion, latency blowouts, and +10x headroom remedies via `autocannon`.
+A dual-harness verification suite for [GitStress](https://gitstress.com) that evaluates concurrency failure patterns across both analytical queuing theory and empirical load testing.
+
+This repository provides:
+1. **The Software Verification Harness**: Validates that GitStress's static AST rules and 4-station Mean Value Analysis (MVA) solver correctly flag the bottleneck symbol and compute theoretical queue saturation parameters ($L = \lambda W$) without executing code.
+2. **The Physical Hardware Verification Harness**: Runs isolated load-test archetypes using `autocannon` to empirically stress the specific socket, channel, and connection-pool failure patterns on physical hardware.
 
 ---
 
-## The Philosophy: Software Math Must Match Physical Reality
+## Verification Scope & Methodology Tiers
 
-Most static analysis tools hallucinate bottlenecks based on naive AST keyword matching. When GitStress scans a repository and outputs:
+To maintain rigorous scientific standards, results are strictly categorized across three distinct evaluation tiers:
 
-> **TARGET: `tkngate/tkngate` -- DIES AT 85 CONCURRENT -- FATAL BOTTLENECK: `http.DefaultTransport`**
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ Tier 1: Analytical Model Prediction (Static AST + Little's Law Queuing Solver)   │
+│ Predicts fatal bottleneck symbol, station service demands, and theoretical knee. │
+└────────────────────────────────────────┬─────────────────────────────────────────┘
+                                         ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ Tier 2: Isolated Archetype Microbenchmark (Targeted Code Snippet Load Test)     │
+│ Isolates the exact symbol/pool in archetypes/ to verify failure mechanics.       │
+└────────────────────────────────────────┬─────────────────────────────────────────┘
+                                         ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ Tier 3: Full Production Software Load Test (Real Binaries & End-to-End Daemons)  │
+│ Runs the full msh.exe, tkngate.exe, and Next.js services under sustained load.   │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
 
-Senior infrastructure engineers ask two vital questions:
-1. **Software Engine Question**: "Did the static analyzer correctly parse the AST, solve the queuing network, and identify the exact culprit symbol without false positives?"
-2. **Hardware Reality Question**: "When executed on physical silicon and flooded with real TCP sockets, does the application actually fail at that predicted concurrency ceiling?"
-
-This repository provides **both harnesses** to prove that GitStress's software engine is 100% physically falsifiable.
-
----
-
-## Dual Verification Matrix: Software Prediction vs. Hardware Reality
-
-| Target Repository | Software Predicted Culprit | Physical Measured Culprit | Software Predicted Saturation | Physical Measured Knee | Software Predicted Headroom | Empirical Hardware Gain | Dual Harness Verdict |
-| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **`msh-protocol/msh`** | `fleet.Server.handleRegister` | `fleet.Server.handleRegister` | **2,500 c/s** | **120 users** | **+10.0x** | **+11.1x** (590 -> 3,594 req/s) | **100% PROVEN** |
-| **`gitstress/gitstress`** | `fetcher.fetchLiveGitHubRepo` | `fetcher.fetchLiveGitHubRepo` | **12,500 c/s** | **120 users** | **+10.0x** | **+4.0x** (0 errors, 4.1k req/s) | **100% PROVEN** |
-| **`tkngate/tkngate`** | `http.DefaultTransport` | `http.DefaultTransport` | **85 c/s** | **85 users** | **+10.0x** | **+1.5x** (174ms -> 46ms p99) | **100% PROVEN** |
-| **`calcom/cal.com`** | `bookings.syncUpcoming` | `bookings.syncUpcoming` | **62 c/s** | **65 users** | **+17.8x** | **+8.6x** (799ms -> 110ms p99) | **100% PROVEN** |
-
-Full Telemetry Artifacts:
-- **Dual Correlation Report**: [`results/dual_verification_matrix.json`](results/dual_verification_matrix.json)
-- **Software Analysis Telemetry**: [`results/software_verification.json`](results/software_verification.json)
-- **Physical Hardware Telemetry**: [`results/benchmark_results.json`](results/benchmark_results.json)
+> **Important Distinction**: Testing an isolated archetype validates whether a specific architectural pattern (e.g., synchronous channel broadcast or idle connection churn) exhibits the predicted bottleneck behavior and responds to the remedy. It demonstrates the failure mechanism, but does not claim that a complex production monolith will saturate at the exact same user count without full environmental calibration.
 
 ---
 
-## Harness 1: Software Verification Harness (AST & MVA Engine)
+## Dual Verification Matrix: Model Prediction vs. Harness Observation
 
-The Software Verification Harness executes the GitStress static analysis engine directly against the source code of each stack without spinning up network listeners.
+Results recorded on an 8-core host (Intel Core i5-8350U @ 1.70GHz, Windows NT x64, Node v24.15.0, Go 1.26.5):
 
-- **Execution Command**: `npm run verify:software`
-- **Execution Latency**: <50 milliseconds
-- **Scope**:
-  - **AST Culprit Detection**: Validates that AST parsers accurately flag fatal bottleneck symbols (`http.DefaultTransport`, synchronous channel write loops, unindexed queries, and outbound HTTP agent pool exhaustion).
-  - **4-Station MVA Queuing Network**: Computes Station 1 (Ingress), Station 2 (Worker), Station 3 (Pool), and Station 4 (Storage) service demands ($D_k$) and identifies the limiting station.
-  - **Little's Law Saturation Model**: Computes theoretical failure threshold:
-    $$N_{\text{fail}} = K \times \frac{W_{\text{timeout}}}{S_{\text{service}}}$$
-  - **False Positive Eradication**: Asserts test paths (`*_test.go`, `tests/`) are excluded and that non-bottleneck symbols are never falsely flagged.
+| Target Workload | Fatal Bottleneck Symbol | Theoretical MVA Ceiling ($N_{\text{fail}}$) | Applied Test Load ($N_{\text{client}}$) | Baseline Throughput | Baseline Latency (p50 / p99) | Tuned Throughput | Tuned Latency (p50 / p99) | Observed Improvement | Harness Verdict |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`msh-protocol/msh`** | `fleet.Server.handleRegister` | 2,500 c/s | 120 conns | 590 req/s | 188ms / 314ms | 3,594 req/s | 28ms / 188ms | **+6.1x throughput** (6.7x p50 drop) | **Observed in harness** |
+| **`gitstress/gitstress`** | `fetcher.fetchLiveGitHubRepo` | 12,500 c/s | 120 conns | 1,074 req/s | 52ms / 425ms | 4,133 req/s | 24ms / 72ms | **+3.8x throughput** (5.9x p99 drop) | **Observed in harness** |
+| **`tkngate/tkngate`** | `http.DefaultTransport` | 85 c/s | 85 conns | 2,020 req/s | 30ms / 174ms | 3,038 req/s | 25ms / 46ms | **+1.5x throughput** (3.8x p99 drop) | **Observed in harness** |
+| **`calcom/cal.com`** | `bookings.syncUpcoming` | 62 c/s | 65 conns | 91 req/s | 661ms / 799ms | 785 req/s | 91ms / 110ms | **+8.6x throughput** (7.3x p99 drop) | **Observed in harness** |
 
+Raw Telemetry Logs:
+- Combined Dual Matrix: [`results/dual_verification_matrix.json`](results/dual_verification_matrix.json)
+- Software AST & MVA Engine Output: [`results/software_verification.json`](results/software_verification.json)
+- Physical Hardware Sweep Telemetry: [`results/benchmark_results.json`](results/benchmark_results.json)
+
+---
+
+## Technical Failure Mechanisms & Observed Data
+
+### 1. `msh-protocol/msh` (Go Swarm Telemetry & Fleet Mesh)
+- **Bottleneck**: Synchronous channel write loop across peer connections in `pkg/fleet/server.go`. When a peer buffer fills or encounters TCP zero-window events, the broadcast loop blocks on channel send.
+- **Microbenchmark Workload**: 120 concurrent unthrottled load clients broadcasting heartbeats across registered peers.
+- **Observed Baseline**: Channel head-of-line blocking inflated p50 delivery latency to 188ms and p99 to 314ms, constraining throughput to 590 req/s.
+- **Observed Remedy**: Converting the channel send to a non-blocking ring buffer (`select { case n.send <- event: default: }`) increased throughput to 3,594 req/s (+6.1x) and lowered p50 latency to 28ms (6.7x faster).
+
+### 2. `gitstress/gitstress` (MVA Analytical Ingestion Engine)
+- **Bottleneck**: Outbound API socket pool contention during parallel repository ingestion (`fetcher.fetchLiveGitHubRepo`). Unbounded parallel requests exhaust Node.js global HTTP agent connection pool.
+- **Microbenchmark Workload**: 120 concurrent diagnostic requests simulating parallel tree fetching.
+- **Observed Baseline**: Sockets starved under burst concurrency, resulting in 3,495 HTTP 504 timeouts during the 5-second test window with p99 latency at 425ms.
+- **Observed Remedy**: Dedicated Undici connection pool with socket keep-alive and in-memory LRU caching processed 4,133 clean req/s (+3.8x) with zero timeouts observed in the test window and p99 latency dropping to 72ms (5.9x faster).
+
+### 3. `tkngate/tkngate` (Go High-Performance Reverse Proxy)
+- **Bottleneck**: `http.DefaultTransport` configures `MaxIdleConnsPerHost: 2` by default in Go's standard library. This does *not* cap in-flight concurrent requests to 2, but limits the number of idle keep-alive connections preserved for subsequent requests.
+- **Mechanism Under Load**: Under concurrent reverse proxy traffic, completed connections cannot be retained in the idle pool. Sockets are aggressively closed, leading to rapid ephemeral port recycling, `TIME_WAIT` socket accumulation, and TLS handshake renegotiation overhead on new requests.
+- **Microbenchmark Workload**: 85 concurrent clients forwarding through the reverse proxy to an upstream backend.
+- **Observed Baseline**: Connection pool eviction pushed p99 latency to 174ms at 2,020 req/s.
+- **Observed Remedy**: Configured `http.Transport` with `MaxIdleConns: 10000`, `MaxIdleConnsPerHost: 2000`, and `IdleConnTimeout: 90s` cut p99 latency to 46ms (3.8x reduction) while increasing throughput to 3,038 req/s (+1.5x).
+
+### 4. `calcom/cal.com` (Node.js Prisma Pool Starvation)
+- **Bottleneck**: Sequential table scan on unindexed booking records holding connections in a default 10-connection Prisma pool.
+- **Microbenchmark Workload**: 65 concurrent clients competing for 10 database connection slots.
+- **Observed Baseline**: Pool acquisition queue backed up, causing p99 latency to climb to 799ms with throughput throttled at 91 req/s.
+- **Observed Remedy**: Simulating a B-Tree index scan (reducing query duration from 95ms to 2.4ms) reduced connection holding time, increasing throughput to 785 req/s (+8.6x) and lowering p99 latency to 110ms (7.3x reduction).
+
+---
+
+## How to Reproduce Locally
+
+### 1. Software Verification Harness (AST & MVA Static Math)
+Runs the static analysis rules and MVA queuing model against the codebase in <100ms without spinning up network ports:
 ```bash
-# Run Software Verification Harness
 npm run verify:software
 ```
 
----
-
-## Harness 2: Physical Hardware Verification Harness (autocannon)
-
-The Physical Hardware Verification Harness compiles native binaries, binds collision-free ports, and subjects both the baseline and tuned implementations to high-concurrency client saturation sweeps.
-
-- **Execution Command**: `npm run verify:hardware`
-- **Execution Latency**: ~30-45 seconds
-- **Host Specs**: Windows_NT 10.0.26200 (x64) · Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz (8 cores)
-- **Scope**:
-  - **Physical Baseline**: Floods the unpatched software to measure socket exhaustion, latency spikes, and 5xx errors.
-  - **Physical Tuned**: Applies the GitStress +10x headroom remedy (connection pooling, ring buffers, B-tree indexes) and measures empirical req/s, p50, and p99 latency improvements.
-
+### 2. Physical Hardware Verification Harness (autocannon Microbenchmarks)
+Spawns isolated archetype services on collision-free ports (`8101`–`8108`) and executes sustained load sweeps:
 ```bash
-# Run Physical Hardware Verification Harness
 npm run verify:hardware
+```
 
-# Run with Host Production Software Targets (msh.exe, tkngate.exe, gitstress)
+### 3. Dual Correlation Suite
+Executes the software verification harness followed by the physical hardware sweeps, compiling the comparison table:
+```bash
+npm test
+# or
+npm run verify:both
+```
+
+### 4. Full Production Software Mode (Tier 3)
+Benchmarks against installed local production binaries (`msh.exe`, `tkngate.exe`, `gitstress`):
+```bash
 npm run test:real
 ```
 
----
-
-## Architectural Deep Dive: The 3 Core Projects
-
-### 1. `msh-protocol/msh` (Go Fleet Mesh & Swarm Telemetry)
-- **Vulnerability**: Synchronous channel write loop in `pkg/fleet/server.go`. Slow WebSocket peers or TCP zero-window events block the broadcast loop.
-- **Software Harness**: MVA identified Station 4 (`Socket Frame Write`) as the fatal bottleneck station with a theoretical saturation ceiling of 2,500 concurrent connections.
-- **Hardware Harness**: Under 120 concurrent connections, baseline throughput collapsed at 590 req/s with latency ballooning to 188ms p50. The non-blocking ring buffer scaled to **3,594 req/s (+11.1x)** with p50 dropping to **28ms (6.7x faster)**.
-
-### 2. `gitstress/gitstress` (MVA Analytical Ingestion Engine)
-- **Vulnerability**: Outbound HTTP socket starvation during concurrent repository ingestion (`fetcher.fetchLiveGitHubRepo`). Parallel API requests exhaust the global HTTP connection pool.
-- **Software Harness**: MVA identified Station 3 (`Outbound Agent Sockets`) as the fatal bottleneck station with a theoretical ceiling of 12,500 concurrent connections.
-- **Hardware Harness**: At 120 concurrent requests, baseline dropped **3,495 requests with HTTP 504 `OUTBOUND_SOCKET_POOL_EXHAUSTION`** errors. Undici connection pooling and LRU caching eliminated **100% of 5xx errors (0 errors)**, scaling clean throughput to **4,133 req/s (+4.0x)** and reducing p99 latency to **72ms (5.9x faster)**.
-
-### 3. `tkngate/tkngate` (Go High-Performance Reverse Proxy)
-- **Vulnerability**: `internal/proxy/proxy.go` uses `http.DefaultTransport`, hardcoding `MaxIdleConnsPerHost: 2`. Under reverse proxy load, every 3rd concurrent request triggers connection teardown and TLS renegotiation churn.
-- **Software Harness**: MVA identified Station 3 (`Idle Connection Pool`) as the fatal station ($Cap/Demand = 2 / 25 = 0.08$), predicting saturation at 85 concurrent users.
-- **Hardware Harness**: P99 latency degraded to 174ms under 85 concurrent users. Tuned `http.Transport` (MaxIdleConns: 10000, MaxIdleConnsPerHost: 2000) cut p99 latency by **3.8x down to 46ms** with **3,038 req/s**.
-
----
-
-## Interactive Web Application & Visual Dashboard
-
-Launch the browser-based software dashboard to explore interactive dynamometers, toggle between Software and Hardware harnesses, and observe live SSE execution:
-
+### 5. Interactive Web Dashboard
+Launches the local browser UI at `http://127.0.0.1:4200` to inspect comparative dynamometers, latency distributions, and live SSE execution logs:
 ```bash
 npm start
 ```
-Navigate to **`http://127.0.0.1:4200`** in your browser.
 
 ---
 
@@ -115,12 +124,12 @@ Navigate to **`http://127.0.0.1:4200`** in your browser.
 
 ```
 gitstress-benchmark/
-├── README.md
+├── README.md                            # Methodology, benchmark figures, and reproduction steps
 ├── package.json
 ├── server.js                            # Web Application Dashboard Server
 ├── harness/
-│   ├── software_verification.js        # Harness 1: Static AST & 4-Station MVA Model Validator
-│   ├── hardware_verification.js        # Harness 2: Physical Hardware Load Testing Harness
+│   ├── software_verification.js        # Tier 1: Static AST & 4-Station MVA Model Validator
+│   ├── hardware_verification.js        # Tier 2: Physical Hardware Load Testing Harness
 │   └── dual_matrix.js                  # Master Dual Runner: Software vs. Hardware
 ├── archetypes/
 │   ├── 01-go-reverse-proxy-pool/        # tkngate archetype

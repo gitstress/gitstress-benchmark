@@ -268,7 +268,7 @@ async function main() {
         tunedErrors,
         gain: throughputGain,
         latencyImprovement: latencyReduction,
-        verdict: 'EMPIRICALLY VERIFIED'
+        verdict: 'Observed in harness'
       };
 
       results.push(entry);

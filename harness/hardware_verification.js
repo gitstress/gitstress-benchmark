@@ -257,7 +257,7 @@ export async function runHardwareVerification() {
         tunedErrors,
         gain: throughputGain,
         latencyImprovement: latencyReduction,
-        verdict: 'HARDWARE EMPIRICALLY VERIFIED'
+        verdict: 'Observed in harness'
       };
 
       results.push(entry);

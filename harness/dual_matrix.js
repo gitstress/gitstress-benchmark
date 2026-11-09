@@ -48,12 +48,12 @@ async function main() {
     return {
       Repository: soft.repo,
       'Predicted Culprit': soft.detectedSymbol,
-      'Measured Culprit': hard.symbol || 'N/A',
-      'Predicted Saturation': soft.predictedCeiling,
-      'Measured Concurrency': hard.concurrency ? `${hard.concurrency} users` : 'N/A',
+      'Tested Symbol': hard.symbol || 'N/A',
+      'Theoretical MVA Ceiling': soft.predictedCeiling,
+      'Applied Client Concurrency': hard.concurrency ? `${hard.concurrency} concurrent` : 'N/A',
       'Predicted Headroom': soft.predictedHeadroom,
-      'Empirical Gain': hard.gain || 'N/A',
-      'Model Accuracy': symbolMatched && headroomProven ? '100% PROVEN' : 'VERIFIED'
+      'Measured Throughput Gain': hard.gain || 'N/A',
+      'Harness Verdict': symbolMatched && headroomProven ? 'Observed in harness' : 'Under evaluation'
     };
   });
 
@@ -72,7 +72,7 @@ async function main() {
     softwareResults,
     hardwareResults,
     correlationMatrix: correlation,
-    verdict: 'BOTH HARNESSES VERIFIED -- ZERO HALLUCINATIONS'
+    verdict: 'EMPIRICAL PATTERN OBSERVED IN HARNESS'
   };
 
   const masterPath = path.join(resultsDir, 'dual_verification_matrix.json');
