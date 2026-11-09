@@ -52,7 +52,7 @@ const ARCHETYPES = [
     id: '01-msh',
     name: 'Go Swarm Telemetry Socket Fanout',
     repo: 'msh-protocol/msh',
-    symbol: 'fleet.Server.handleRegister',
+    symbol: 'fleet.Server.Broadcast (Swarm Fanout)',
     executable: swarmExe,
     basePort: 8101,
     tunedPort: 8102,

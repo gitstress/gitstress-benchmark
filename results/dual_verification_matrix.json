@@ -10,7 +10,7 @@
       "name": "Go Swarm Telemetry Socket Fanout",
       "repo": "msh-protocol/msh",
       "sourceFile": "main.go",
-      "detectedSymbol": "fleet.Server.handleRegister",
+      "detectedSymbol": "fleet.Server.Broadcast (Swarm Fanout)",
       "fatalStation": "Socket Frame Write",
       "predictedCeiling": "2,500 c/s",
       "predictedHeadroom": "+10.0x",
@@ -62,7 +62,7 @@
     {
       "name": "Go Swarm Telemetry Socket Fanout",
       "repo": "msh-protocol/msh",
-      "symbol": "fleet.Server.handleRegister",
+      "symbol": "fleet.Server.Broadcast (Swarm Fanout)",
       "concurrency": 120,
       "baseSuccessReqSec": 400,
       "baseP50": "224ms",
@@ -131,8 +131,8 @@
   "correlationMatrix": [
     {
       "Repository": "msh-protocol/msh",
-      "Predicted Culprit": "fleet.Server.handleRegister",
-      "Tested Symbol": "fleet.Server.handleRegister",
+      "Predicted Culprit": "fleet.Server.Broadcast",
+      "Tested Symbol": "fleet.Server.Broadcast (Swarm Fanout)",
       "Theoretical MVA Ceiling": "2,500 c/s",
       "Applied Client Concurrency": "120 concurrent",
       "Predicted Headroom": "+10.0x",

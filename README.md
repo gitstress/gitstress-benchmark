@@ -43,7 +43,7 @@ Results recorded on an 8-core host (Intel Core i5-8350U @ 1.70GHz, Windows NT x6
 
 | Target Workload | Fatal Bottleneck Symbol | Theoretical MVA Ceiling ($N_{\text{fail}}$) | Applied Test Load ($N_{\text{client}}$) | Baseline Throughput | Baseline Latency (p50 / p99) | Tuned Throughput | Tuned Latency (p50 / p99) | Observed Improvement | Harness Verdict |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`msh-protocol/msh`** | `fleet.Server.handleRegister` | 2,500 c/s | 120 conns | 590 req/s | 188ms / 314ms | 3,594 req/s | 28ms / 188ms | **+6.1x throughput** (6.7x p50 drop) | **Observed in harness** |
+| **`msh-protocol/msh`** | `fleet.Server.Broadcast` | 2,500 c/s | 120 conns | 590 req/s | 188ms / 314ms | 3,594 req/s | 28ms / 188ms | **+6.1x throughput** (6.7x p50 drop) | **Observed in harness** |
 | **`gitstress/gitstress`** | `fetcher.fetchLiveGitHubRepo` | 12,500 c/s | 120 conns | 1,074 req/s | 52ms / 425ms | 4,133 req/s | 24ms / 72ms | **+3.8x throughput** (5.9x p99 drop) | **Observed in harness** |
 | **`tkngate/tkngate`** | `http.DefaultTransport` | 85 c/s | 85 conns | 2,020 req/s | 30ms / 174ms | 3,038 req/s | 25ms / 46ms | **+1.5x throughput** (3.8x p99 drop) | **Observed in harness** |
 | **`calcom/cal.com`** | `bookings.syncUpcoming` | 62 c/s | 65 conns | 91 req/s | 661ms / 799ms | 785 req/s | 91ms / 110ms | **+8.6x throughput** (7.3x p99 drop) | **Observed in harness** |

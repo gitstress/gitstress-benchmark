@@ -73,7 +73,7 @@ const SOFTWARE_TARGETS = [
     repo: 'msh-protocol/msh',
     codePath: path.join(rootDir, 'archetypes', '03-go-swarm-socket-fanout', 'main.go'),
     realPath: 'C:\\Users\\tesse\\Desktop\\msh-protocol\\oss\\pkg\\fleet\\server.go',
-    expectedSymbol: 'fleet.Server.handleRegister',
+    expectedSymbol: 'fleet.Server.Broadcast (Swarm Fanout)',
     astRules: [
       { pattern: /select\s*\{\s*case\s+\w+\.send\s*<-/, desc: 'Synchronous channel write without default select' },
       { pattern: /nodes\s*map\[string\]\*Node|peers\.Range/, desc: 'Concurrent peer registration map' }

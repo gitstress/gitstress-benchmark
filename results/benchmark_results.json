@@ -12,7 +12,7 @@
     {
       "name": "Go Swarm Telemetry Socket Fanout",
       "repo": "msh-protocol/msh",
-      "symbol": "fleet.Server.handleRegister",
+      "symbol": "fleet.Server.Broadcast (Swarm Fanout)",
       "concurrency": 120,
       "baseSuccessReqSec": 418,
       "baseP50": "207ms",
@@ -84,7 +84,7 @@
         "id": "01-msh",
         "name": "Go Swarm Telemetry Socket Fanout",
         "repo": "msh-protocol/msh",
-        "symbol": "fleet.Server.handleRegister",
+        "symbol": "fleet.Server.Broadcast (Swarm Fanout)",
         "executable": "C:\\Users\\tesse\\Desktop\\gitstress\\gitstress-benchmark\\archetypes\\03-go-swarm-socket-fanout\\swarm_bench.exe",
         "basePort": 8101,
         "tunedPort": 8102,
