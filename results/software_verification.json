@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-11-09T01:36:41.761Z",
+  "harness": "GitStress Software Verification Engine (MVA & AST Static Analyzer)",
+  "version": "0.12.0",
+  "totalScanned": 4,
+  "passedCount": 4,
+  "accuracy": "100%",
+  "details": [
+    {
+      "id": "01-msh",
+      "name": "Go Swarm Telemetry Socket Fanout",
+      "repo": "msh-protocol/msh",
+      "sourceFile": "main.go",
+      "detectedSymbol": "fleet.Server.handleRegister",
+      "fatalStation": "Socket Frame Write",
+      "predictedCeiling": "2,500 c/s",
+      "predictedHeadroom": "+10.0x",
+      "remedy": "Non-blocking channel ring buffer with select evictions",
+      "astPassed": true,
+      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+    },
+    {
+      "id": "02-gitstress",
+      "name": "Analytical Engine Ingestion Pool",
+      "repo": "gitstress/gitstress",
+      "sourceFile": "server.js",
+      "detectedSymbol": "fetcher.fetchLiveGitHubRepo",
+      "fatalStation": "GitHub Raw Tree API",
+      "predictedCeiling": "12,500 c/s",
+      "predictedHeadroom": "+10.0x",
+      "remedy": "Undici Agent connection pool + Multi-tier LRU cache",
+      "astPassed": true,
+      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+    },
+    {
+      "id": "03-tkngate",
+      "name": "Go Reverse Proxy Socket Churn",
+      "repo": "tkngate/tkngate",
+      "sourceFile": "main.go",
+      "detectedSymbol": "http.DefaultTransport",
+      "fatalStation": "Idle Connection Pool (Host)",
+      "predictedCeiling": "85 c/s",
+      "predictedHeadroom": "+10.0x",
+      "remedy": "High-capacity pooled http.Transport (MaxIdleConnsPerHost: 2000)",
+      "astPassed": true,
+      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+    },
+    {
+      "id": "04-calcom",
+      "name": "Node.js Prisma Pool Starvation",
+      "repo": "calcom/cal.com",
+      "sourceFile": "server.js",
+      "detectedSymbol": "bookings.syncUpcoming",
+      "fatalStation": "Prisma Connection Pool",
+      "predictedCeiling": "62 c/s",
+      "predictedHeadroom": "+17.8x",
+      "remedy": "CREATE INDEX CONCURRENTLY + B-Tree index lookup (2.4ms)",
+      "astPassed": true,
+      "verdict": "SOFTWARE VERIFIED (100% Deterministic AST)"
+    }
+  ]
+}

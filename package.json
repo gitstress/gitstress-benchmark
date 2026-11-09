@@ -7,8 +7,11 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node scripts/run_matrix.js",
-    "test:real": "node scripts/run_matrix.js --real",
+    "test": "node harness/dual_matrix.js",
+    "verify:software": "node harness/software_verification.js",
+    "verify:hardware": "node harness/hardware_verification.js",
+    "verify:both": "node harness/dual_matrix.js",
+    "test:real": "node harness/hardware_verification.js --real",
     "bench:proxy": "bash archetypes/01-go-reverse-proxy-pool/verify.sh",
     "bench:db": "bash archetypes/02-node-prisma-unindexed-pool/verify.sh",
     "bench:swarm": "bash archetypes/03-go-swarm-socket-fanout/verify.sh",

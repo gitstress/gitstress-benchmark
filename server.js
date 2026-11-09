@@ -69,6 +69,46 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // API: Get Software Verification Results
+  if (url.pathname === '/api/software' && req.method === 'GET') {
+    const softwareFile = path.join(__dirname, 'results', 'software_verification.json');
+    if (fs.existsSync(softwareFile)) {
+      try {
+        const data = fs.readFileSync(softwareFile, 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(data);
+        return;
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+        return;
+      }
+    }
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'No software verification results found.' }));
+    return;
+  }
+
+  // API: Get Dual Verification Matrix
+  if (url.pathname === '/api/dual' && req.method === 'GET') {
+    const dualFile = path.join(__dirname, 'results', 'dual_verification_matrix.json');
+    if (fs.existsSync(dualFile)) {
+      try {
+        const data = fs.readFileSync(dualFile, 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(data);
+        return;
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+        return;
+      }
+    }
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'No dual verification results found.' }));
+    return;
+  }
+
   // API: System & Hardware Telemetry
   if (url.pathname === '/api/hardware' && req.method === 'GET') {
     const cpus = os.cpus();
@@ -114,7 +154,16 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    const scriptPath = path.join(__dirname, 'scripts', 'run_matrix.js');
+    const harness = url.searchParams.get('harness') || 'both';
+    let scriptPath;
+    if (harness === 'software') {
+      scriptPath = path.join(__dirname, 'harness', 'software_verification.js');
+    } else if (harness === 'hardware') {
+      scriptPath = path.join(__dirname, 'harness', 'hardware_verification.js');
+    } else {
+      scriptPath = path.join(__dirname, 'harness', 'dual_matrix.js');
+    }
+
     const mode = url.searchParams.get('mode') || 'portable';
     const target = url.searchParams.get('target') || 'all';
 
@@ -122,7 +171,7 @@ const server = http.createServer((req, res) => {
     if (mode === 'real') args.push('--real');
     if (target !== 'all') args.push(`--target=${target}`);
 
-    broadcastSSE('start', { mode, target, timestamp: new Date().toISOString() });
+    broadcastSSE('start', { harness, mode, target, timestamp: new Date().toISOString() });
 
     try {
       activeBenchmarkProcess = spawn(process.execPath, args, {
@@ -192,3 +241,4 @@ server.listen(PORT, () => {
   console.log(`  SSE Event Stream:         http://127.0.0.1:${PORT}/api/stream        `);
   console.log(`======================================================================\n`);
 });
+

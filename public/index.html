@@ -58,6 +58,15 @@
 
           <div class="run-control-box">
             <div class="control-row">
+              <label class="control-label">Verification Harness:</label>
+              <div class="toggle-group" id="harnessToggle">
+                <button class="toggle-btn active" data-harness="both">Both (Dual Matrix)</button>
+                <button class="toggle-btn" data-harness="software">Software (MVA & AST)</button>
+                <button class="toggle-btn" data-harness="hardware">Physical Hardware</button>
+              </div>
+            </div>
+
+            <div class="control-row">
               <label class="control-label">Target Mode:</label>
               <div class="toggle-group" id="modeToggle">
                 <button class="toggle-btn active" data-mode="portable">Portable Archetypes</button>
@@ -70,7 +79,7 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z"/>
                 </svg>
-                Run Hardware Verification Matrix
+                Execute Verification Suite
               </button>
               <button id="toggleConsoleBtn" class="btn-secondary">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -196,3 +205,4 @@
   <script src="/app.js"></script>
 </body>
 </html>
+
